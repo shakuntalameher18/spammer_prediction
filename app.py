@@ -55,7 +55,7 @@ scaler = joblib.load("scaler.pkl")
 # =========================
 # Load dataset
 # =========================
-df = pd.read_csv("fiverr_data.csv")
+df = pd.read_csv("fiverr_data.csv.gz", compression='gzip')
 
 TARGET_COL = "label"
 USER_ID_COL = "user_id"
