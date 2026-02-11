@@ -49,7 +49,9 @@ st.markdown(
 # =========================
 # Load model & scaler
 # =========================
-model = joblib.load("spam_detection_model.pkl")
+model_pkg = joblib.load("spam_detection_model.pkl")
+model = model_pkg["model"]
+threshold = model_pkg["threshold"]
 scaler = joblib.load("scaler.pkl")
 
 # =========================
@@ -180,13 +182,15 @@ if submitted:
         input_scaled = scaler.transform(input_df)
 
         prediction = model.predict(input_scaled)[0]
-        prediction_proba = model.predict_proba(input_scaled)
+        prediction_proba = model.predict_proba(input_scaled)[:,1]
+        # apply threshold
+        y_pred = (prediction_proba >= threshold).astype(int)
 
         st.markdown("---")
         st.subheader("📊 Prediction Result")
         st.write(f"**User ID:** `{user_id}`")
 
-        if prediction == 1:
+        if y_pred == 1:
             st.error("🚨 Prediction: **SPAM**")
         else:
             st.success("✅ Prediction: **NOT SPAM**")
